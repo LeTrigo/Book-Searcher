@@ -1,25 +1,28 @@
 import { useState } from "react";
 import bookImg from "./assets/book-img.png";
-
 import "./App.css";
-import axios from "axios"; // Import axios for making HTTP requests
+import axios from "axios"; // Importa axios para realizar peticiones HTTP
 
+// Obtiene la URL de la API desde variables de entorno (para flexibilidad entre desarrollo/producción)
 const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
-  const [searchQuery, setSearchQuery] = useState(""); // State to store the input value
-  const [books, setBooks] = useState([]); // State to store the list of books
-  const [loading, setLoading] = useState(false); // State to manage loading state
-  const [error, setError] = useState(null); // State to manage error messages
-  const [expandedBooks, setExpandedBooks] = useState({});
-  const [hasSearched, setHasSearched] = useState(false); // NUEVO
+  // Estados para gestionar la aplicación
+  const [searchQuery, setSearchQuery] = useState(""); // Almacena el texto de búsqueda
+  const [books, setBooks] = useState([]); // Almacena los libros obtenidos de la API
+  const [loading, setLoading] = useState(false); // Controla el estado de carga
+  const [error, setError] = useState(null); // Almacena mensajes de error
+  const [expandedBooks, setExpandedBooks] = useState({}); // Controla qué descripciones están expandidas
+  const [hasSearched, setHasSearched] = useState(false); // Indica si ya se realizó una búsqueda
 
+  // Función para manejar la búsqueda de libros
   const handleSearch = async () => {
-    setLoading(true); // Set loading to true when starting the search
-    setError(null); // Reset any previous errors
-    setBooks([]); // Clear previous search results
-    setHasSearched(true); // Marcar que se ha buscado
+    setLoading(true); // Activa indicador de carga
+    setError(null); // Reinicia errores previos
+    setBooks([]); // Limpia resultados anteriores
+    setHasSearched(true); // Marca que se realizó una búsqueda
 
+    // Valida que la búsqueda no esté vacía
     if (!searchQuery.trim()) {
       setError("Please enter a search term.");
       setLoading(false);
@@ -27,18 +30,20 @@ function App() {
     }
 
     try {
+      // Realiza petición a la API con el término de búsqueda
       const response = await axios.get(API_URL, {
-        params: { q: searchQuery }, // Pass the search query as a parameter
+        params: { q: searchQuery },
       });
 
-      setBooks(response.data || []);
+      setBooks(response.data || []); // Almacena los libros obtenidos
     } catch (err) {
       setError(err.message || "An error occurred while fetching books.");
     } finally {
-      setLoading(false); // Set loading to false after the request is complete
+      setLoading(false); // Desactiva indicador de carga
     }
   };
 
+  // Función para manejar el efecto de animación del título según movimiento del mouse
   const handleMouseMove = (e) => {
     const title = document.querySelector(".animated-title");
     const rect = title.getBoundingClientRect();
@@ -48,6 +53,7 @@ function App() {
     title.style.setProperty("--mouse-y", `${y}%`);
   };
 
+  // Función para expandir/colapsar descripciones y títulos
   const toggleDescription = (id) => {
     setExpandedBooks((prev) => ({
       ...prev,
@@ -55,12 +61,18 @@ function App() {
     }));
   };
 
+  // Renderizado del componente
   return (
     <div onMouseMove={handleMouseMove}>
+      {/* Icono flotante de libro con animación */}
       <div className="floating-book-icon">
         <img src={bookImg} alt="Libro flotante" width={48} height={48} />
       </div>
+
+      {/* Título de la aplicación con animación */}
       <h1 className="animated-title">Book Searcher</h1>
+
+      {/* Formulario de búsqueda */}
       <form
         className="search-form"
         onSubmit={(e) => {
@@ -77,7 +89,7 @@ function App() {
           placeholder="Search a book..."
         />
         <button className="search-button" type="submit">
-          {/* SVG lupa */}
+          {/* SVG lupa - Icono de búsqueda */}
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <circle cx="11" cy="11" r="8" stroke="#fff" strokeWidth="2" />
             <line
@@ -92,19 +104,22 @@ function App() {
         </button>
       </form>
 
-      {/* Loader */}
+      {/* Indicador de carga */}
       {loading && <div className="loader"></div>}
 
-      {/* Error */}
+      {/* Mensajes de error */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {/* Displaying the list of books */}
+      {/* Contenedor de resultados */}
       <div className="book-container">
+        {/* Mensaje cuando no se encuentran libros */}
         {!loading && hasSearched && books.length === 0 && (
           <p style={{ color: "#fff", fontSize: "1.2rem", marginTop: "2rem" }}>
             Sorry, no books found.
           </p>
         )}
+
+        {/* Mapeo de los libros encontrados */}
         {books.map((book) => {
           const isTitleExpanded = expandedBooks[`${book.id}-title`];
           const isDescExpanded = expandedBooks[`${book.id}-desc`];
@@ -116,6 +131,7 @@ function App() {
               className="book-card"
               key={book.id}
               onMouseMove={(e) => {
+                // Efecto de seguimiento del cursor en las tarjetas
                 const card = e.currentTarget;
                 const rect = card.getBoundingClientRect();
                 const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -124,6 +140,7 @@ function App() {
                 card.style.setProperty("--mouse-y", `${y}%`);
               }}
             >
+              {/* Título del libro con opción expandible */}
               <div
                 className={`book-title${isTitleExpanded ? " expanded" : ""}`}
               >
@@ -143,8 +160,10 @@ function App() {
                 </span>
               )}
 
+              {/* Autores del libro */}
               <p>{book.volumeInfo.authors?.join(", ")}</p>
 
+              {/* Imagen del libro con enlace de compra si está disponible */}
               {book.volumeInfo.imageLinks?.thumbnail &&
                 (book.saleInfo?.buyLink ? (
                   <a
@@ -167,6 +186,7 @@ function App() {
                   />
                 ))}
 
+              {/* Descripción del libro con opción expandible */}
               <div
                 className={`book-description${
                   isDescExpanded ? " expanded" : ""
