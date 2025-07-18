@@ -1,24 +1,35 @@
 #root {
   max-width: 1280px;
+  /* Sets the maximum width of the root container */
   margin: 0 auto;
+  /* Centers the container horizontally */
   padding: 2rem;
+  /* Adds spacing inside the container */
   text-align: center;
+  /* Aligns text to the center */
 }
 
-.logo {
+body {
+  background-image: url(assets/background.jpg);
+  /* Sets a background image for the body */
+}
+
+
+
+/* .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
-}
+} */
 
-.logo:hover {
+/* .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
 
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
-}
+} */
 
 @keyframes logo-spin {
   from {
@@ -40,19 +51,234 @@
   padding: 2em;
 }
 
-.read-the-docs {
-  color: #888;
+
+
+.search-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 2rem;
+  /* Agrega margen inferior */
 }
 
 .form-field {
   border: 1px solid #ccc;
-  border-radius: 4px;
+  /* Adds a light gray border around the input field */
+  border-radius: 4px 0 0 4px;
+  /* Rounds the corners of the input field */
   padding: 0.5rem;
-  width: 100%;
+  /* Adds spacing inside the input field */
+  width: 50%;
+  /* Sets the width of the input field to 50% of its container */
+  margin: 0;
+  /* Removes margin */
   box-sizing: border-box;
+  /* Ensures padding and border are included in the element's width */
+  height: 40px;
+  /* Igual altura que el botón */
 }
 
 .search-button {
-  margin-top: 2rem;
+  margin: 0;
+  /* Elimina el espacio entre el input y el botón */
+  border-radius: 0 4px 4px 0;
+  padding: 0 1.2rem;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  background: #222;
+  border: 1px solid #ccc;
+  border-left: none;
+  cursor: pointer;
+}
 
+.book-container {
+  display: flex;
+  /* Enables flexbox layout */
+  flex-wrap: wrap;
+  /* Allows items to wrap to the next row if they exceed the container width */
+  gap: 1rem;
+  /* Adds spacing between book cards */
+  justify-content: center;
+  /* Centers the book cards horizontally */
+}
+
+.book-card {
+  display: flex;
+  /* Enables flexbox layout */
+  flex-direction: column;
+  /* Aligns items vertically */
+  align-items: center;
+  /* Centers items horizontally */
+  justify-content: flex-start;
+  /* Align content to the top */
+  padding: 0.7rem;
+  /* Slightly less padding */
+  border: 2px solid #ccc;
+  /* Adds a light gray border around the card */
+  border-radius: 8px;
+  /* Rounds the corners of the card */
+  width: 220px;
+  /* Reduced width */
+  height: 400px;
+  /* Reduced height */
+  overflow: hidden;
+  /* Ensures content doesn't overflow the card */
+  margin-bottom: 1rem;
+  /* Adds spacing below the card */
+  text-align: center;
+  /* Centers text horizontally */
+  transition: height 0.3s ease, background 0.3s ease;
+  /* Smoothens the height and background transition */
+  background: transparent;
+  /* Transparent background by default */
+  position: relative;
+}
+
+.book-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  z-index: -1;
+  /* Ensure the gradient is behind the content */
+  transition: opacity 0.3s;
+}
+
+.book-card:hover::before {
+  opacity: 1;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      #ff758c 1%,
+      /* Much smaller inner circle */
+      #758cff 1%,
+      transparent 10%);
+}
+
+.book-card:hover {
+  /* Optional: intensify the effect on hover */
+  background: radial-gradient(circle at var(--mouse-x, 15%) var(--mouse-y, 15%), #6b8bea 10%, #292929 100%);
+  /* Color effect only on hover */
+}
+
+.book-card::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 2;
+  border-radius: 8px;
+  transition: opacity 0.3s;
+  border: 2px solid transparent;
+}
+
+.book-card:hover::after {
+  opacity: 1;
+  border-image: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      #ff758c 10%, #758cff 40%, transparent 80%) 1;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.book-card.expanded {
+  height: auto;
+  /* Allows the card to expand dynamically */
+  max-height: 800px;
+  /* Sets a maximum height for the card */
+  overflow-y: auto;
+  /* Enables vertical scrolling for the content */
+}
+
+.book-title {
+  font-size: 1.1rem;
+  /* Slightly smaller font for smaller card */
+  font-weight: bold;
+  max-height: 6em;
+  /* More vertical space for the title */
+  overflow-y: auto;
+  /* Enable vertical scroll */
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-wrap: break-word;
+  margin-bottom: 0.5rem;
+  /* Less space below the title */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  /* Show up to 5 lines */
+  -webkit-box-orient: vertical;
+  padding: 0.4rem 0.1rem;
+  /* Less horizontal padding */
+}
+
+.book-title.expanded {
+  max-height: 9em;
+  /* More space when expanded */
+  -webkit-line-clamp: unset;
+}
+
+.book-image {
+  margin: 1rem 0;
+  max-width: 90%;
+  max-height: 140px;
+  /* Smaller image for smaller card */
+  object-fit: contain;
+}
+
+.book-description {
+  max-height: 70px;
+  /* Less vertical space for description */
+  overflow-y: auto;
+  /* Enable vertical scroll */
+  text-overflow: ellipsis;
+  /* Adds "..." to truncated text */
+  white-space: pre-line;
+  /* Preserve line breaks */
+  word-wrap: break-word;
+  /* Breaks long words to fit within the card */
+  margin-bottom: 0.5rem;
+  /* Less space below the description */
+  padding: 0.2rem;
+  /* Less padding */
+  font-size: 0.95rem;
+}
+
+.book-description.expanded {
+  max-height: 140px;
+  /* Less space when expanded */
+  -webkit-line-clamp: unset;
+}
+
+.show-more {
+  color: #007bff;
+  /* Sets the color for the "Show more" link */
+  cursor: pointer;
+  /* Changes the cursor to a pointer */
+  text-decoration: underline;
+  /* Adds an underline to the link */
+  margin-bottom: 0.5rem;
+}
+
+.animated-title {
+  font-size: 3rem;
+  /* Sets the font size of the title */
+  color: transparent;
+  /* Makes the text color transparent */
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), #ff758c, #758cff);
+  /* Creates a radial gradient that follows the mouse position */
+  background-clip: text;
+  /* Clips the background to the shape of the text */
+  -webkit-background-clip: text;
+  /* Ensures compatibility with WebKit browsers */
+  transition: background 0.3s ease;
+  /* Smoothens the transition of the background gradient */
+  cursor: pointer;
+  /* Changes the cursor to a pointer when hovering over the title */
 }
