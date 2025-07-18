@@ -7,9 +7,9 @@ const searchBooks = async (req, res) => {
   }
 
   try {
-    console.log("Search query received:", query);
+    // console.log("Search query received:", query);
     const books = await bookService.fetchBooks(query);
-    console.log("Books fetched:", books);
+    // console.log("Books fetched:", books);
     res.json(books);
   } catch (error) {
     console.error("Error fetching books:", error);

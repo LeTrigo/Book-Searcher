@@ -1,20 +1,23 @@
+body {
+  overflow-x: hidden;
+  width: 100vw;
+  max-width: 100vw;
+}
+
 #root {
-  max-width: 1280px;
-  /* Sets the maximum width of the root container */
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
   margin: 0 auto;
-  /* Centers the container horizontally */
   padding: 2rem;
-  /* Adds spacing inside the container */
   text-align: center;
-  /* Aligns text to the center */
 }
 
 body {
   background-image: url(assets/background.jpg);
   /* Sets a background image for the body */
 }
-
-
 
 /* .logo {
   height: 6em;
@@ -50,8 +53,6 @@ body {
 .card {
   padding: 2em;
 }
-
-
 
 .search-form {
   display: flex;
@@ -94,14 +95,14 @@ body {
 }
 
 .book-container {
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
   display: flex;
-  /* Enables flexbox layout */
   flex-wrap: wrap;
-  /* Allows items to wrap to the next row if they exceed the container width */
   gap: 1rem;
-  /* Adds spacing between book cards */
   justify-content: center;
-  /* Centers the book cards horizontally */
 }
 
 .book-card {
@@ -119,9 +120,12 @@ body {
   /* Adds a light gray border around the card */
   border-radius: 8px;
   /* Rounds the corners of the card */
-  width: 220px;
+  width: 100%;
+  max-width: 350px;
+  min-width: 0;
   /* Reduced width */
-  height: 400px;
+  height: 520px;
+  /* Make cards longer */
   /* Reduced height */
   overflow: hidden;
   /* Ensures content doesn't overflow the card */
@@ -281,4 +285,123 @@ body {
   /* Smoothens the transition of the background gradient */
   cursor: pointer;
   /* Changes the cursor to a pointer when hovering over the title */
+}
+
+/* Spinner Loader */
+.loader {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border: 4px solid #758cff;
+  border-radius: 50%;
+  border-top-color: #ff758c;
+  animation: spin 1s ease-in-out infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Responsive styles --- */
+@media (max-width: 900px) {
+  .book-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .book-card {
+    width: 100vw;
+    max-width: 350px;
+    min-width: 0;
+    margin: 1rem auto;
+    /* Remove mouse animation on cards */
+    background: transparent !important;
+  }
+
+  .book-card::before,
+  .book-card::after {
+    display: none !important;
+  }
+
+  .book-title,
+  .book-title.expanded {
+    max-height: none;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    display: block;
+    padding: 0.7rem 0.2rem;
+  }
+
+  .book-description,
+  .book-description.expanded {
+    max-height: 220px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .floating-book-icon {
+    top: 0.5rem;
+    left: 0.5rem;
+    z-index: 10;
+  }
+
+  .floating-book-icon img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .animated-title {
+    margin-top: 3.5rem;
+    font-size: 2rem;
+    word-break: break-word;
+  }
+
+  .search-form,
+  .book-card,
+  .book-container {
+    width: 100vw;
+    max-width: 100vw;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
+
+/* --- Desktop styles (keep your current styles, but make cards longer) --- */
+.book-card {
+  width: 220px;
+  height: 520px;
+  /* Make cards longer */
+  /* ...rest of your styles... */
+}
+
+.floating-book-icon {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+  animation: floatBook 2.5s ease-in-out infinite;
+}
+
+@keyframes floatBook {
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 2px 8px #ff758c88);
+  }
+
+  50% {
+    transform: translateY(-18px) scale(1.07);
+    filter: drop-shadow(0 8px 16px #758cff88);
+  }
+}
+
+.floating-book-icon img {
+  width: 80px;
+  height: 80px;
 }

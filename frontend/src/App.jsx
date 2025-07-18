@@ -1,7 +1,10 @@
 import { useState } from "react";
+import bookImg from "./assets/book-img.png";
 
 import "./App.css";
 import axios from "axios"; // Import axios for making HTTP requests
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [searchQuery, setSearchQuery] = useState(""); // State to store the input value
@@ -9,11 +12,13 @@ function App() {
   const [loading, setLoading] = useState(false); // State to manage loading state
   const [error, setError] = useState(null); // State to manage error messages
   const [expandedBooks, setExpandedBooks] = useState({});
+  const [hasSearched, setHasSearched] = useState(false); // NUEVO
 
   const handleSearch = async () => {
     setLoading(true); // Set loading to true when starting the search
     setError(null); // Reset any previous errors
     setBooks([]); // Clear previous search results
+    setHasSearched(true); // Marcar que se ha buscado
 
     if (!searchQuery.trim()) {
       setError("Please enter a search term.");
@@ -22,7 +27,7 @@ function App() {
     }
 
     try {
-      const response = await axios.get("http://localhost:3000/books", {
+      const response = await axios.get(API_URL, {
         params: { q: searchQuery }, // Pass the search query as a parameter
       });
 
@@ -52,6 +57,9 @@ function App() {
 
   return (
     <div onMouseMove={handleMouseMove}>
+      <div className="floating-book-icon">
+        <img src={bookImg} alt="Libro flotante" width={48} height={48} />
+      </div>
       <h1 className="animated-title">Book Searcher</h1>
       <form
         className="search-form"
@@ -66,6 +74,7 @@ function App() {
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search a book..."
         />
         <button className="search-button" type="submit">
           {/* SVG lupa */}
@@ -84,13 +93,18 @@ function App() {
       </form>
 
       {/* Loader */}
-      {loading && <p>Loading...</p>}
+      {loading && <div className="loader"></div>}
 
       {/* Error */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {/* Displaying the list of books */}
       <div className="book-container">
+        {!loading && hasSearched && books.length === 0 && (
+          <p style={{ color: "#fff", fontSize: "1.2rem", marginTop: "2rem" }}>
+            Sorry, no books found.
+          </p>
+        )}
         {books.map((book) => {
           const isTitleExpanded = expandedBooks[`${book.id}-title`];
           const isDescExpanded = expandedBooks[`${book.id}-desc`];
@@ -131,13 +145,27 @@ function App() {
 
               <p>{book.volumeInfo.authors?.join(", ")}</p>
 
-              {book.volumeInfo.imageLinks?.thumbnail && (
-                <img
-                  className="book-image"
-                  src={book.volumeInfo.imageLinks.thumbnail}
-                  alt={title}
-                />
-              )}
+              {book.volumeInfo.imageLinks?.thumbnail &&
+                (book.saleInfo?.buyLink ? (
+                  <a
+                    href={book.saleInfo.buyLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Comprar este libro"
+                  >
+                    <img
+                      className="book-image"
+                      src={book.volumeInfo.imageLinks.thumbnail}
+                      alt={title}
+                    />
+                  </a>
+                ) : (
+                  <img
+                    className="book-image"
+                    src={book.volumeInfo.imageLinks.thumbnail}
+                    alt={title}
+                  />
+                ))}
 
               <div
                 className={`book-description${
